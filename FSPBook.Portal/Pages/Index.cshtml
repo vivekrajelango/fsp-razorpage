@@ -1,0 +1,85 @@
+﻿@page
+@using FSPBook.Data.Entities;
+@using FSPBook.Portal.Utilities;
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+
+<div class="container">
+    <div class="row">
+
+
+        <div class="col-md-4">
+            <h1 class="display-4">News Feed</h1>
+            @if(Model.NewsFeed is not null)
+            {
+                foreach(var feeddata in Model.NewsFeed.data)
+                {
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="text-left">
+                                <a href="@feeddata.url" target="_blank">
+                                    @feeddata.title
+                                </a>  <br />
+                                @PostedTimeCalculator.TimeAgo(feeddata.published_at);
+                            </span>
+
+                        </div>
+                        <div class="card-body">
+                            <img src="@feeddata.image_url" alt="newsimage" height="50" width="50">
+                            @feeddata.description
+                        </div>
+                    </div>
+
+                    <br />
+                }
+               
+            }
+        </div>
+        <div class="col-md-8">
+            <h1 class="display-4">Welcome to FSP Book!</h1>
+
+            @foreach (Post post in Model.Posts)
+            {
+                <div class="card">
+                    <div class="card-header">
+                        <span class="text-left">
+                            <a asp-page="./Profile" asp-route-id="@post.Author.Id">
+                                @post.Author.FullName
+                            </a>  <br />
+                            @PostedTimeCalculator.TimeAgo(post.DateTimePosted.DateTime)
+                        </span>
+
+                    </div>
+                    <div class="card-body">
+                        @post.Content
+                    </div>
+                </div>
+
+                <br />
+            }
+            @{
+                var prevDisabled = !Model.Posts.HasPreviousPage ? "disabled" : "";
+                var nextDisabled = !Model.Posts.HasNextPage ? "disabled" : "";
+            }
+
+            <a asp-page="./Index"
+               asp-route-sortOrder="@Model.CurrentSort"
+               asp-route-pageIndex="@(Model.Posts.PageIndex - 1)"
+               asp-route-currentFilter="@Model.CurrentFilter"
+               class="btn btn-primary @prevDisabled">
+                Previous
+            </a>
+            <a asp-page="./Index"
+               asp-route-sortOrder="@Model.CurrentSort"
+               asp-route-pageIndex="@(Model.Posts.PageIndex + 1)"
+               asp-route-currentFilter="@Model.CurrentFilter"
+               class="btn btn-primary @nextDisabled">
+                Next
+            </a>
+        </div>
+    </div>
+
+</div>

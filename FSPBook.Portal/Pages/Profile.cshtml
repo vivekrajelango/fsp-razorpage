@@ -1,0 +1,49 @@
+﻿@page
+@using FSPBook.Portal.Utilities;
+@model FSPBook.Portal.Pages.ProfileModel
+@{
+    if (Model.Profile is not null)
+        ViewData["Title"] = "Profile of " + Model.Profile.FullName;
+    else
+        ViewData["Title"] = "Profile";
+}
+
+<div class="col-md-12 col-lg-12">
+    @if (Model.Profile is null)
+    {
+        <div class="text-center">
+        No Profile Found
+        </div>
+    }
+
+    @if (Model.Profile is not null)
+    {
+        <div class="text-center">
+            <table class="table table-responsive table-borderless">
+                <tr>
+                    <td><strong>User Name</strong></td>
+                    <td>@Model.Profile.FullName</td>
+                </tr>
+                <tr>
+                    <td><strong>Job Title</strong></td>
+                    <td>@Model.Profile.JobTitle</td>
+                </tr>
+            </table>
+            Recent Post
+            <div class="card">
+                <div class="card-header">
+                    <span class="text-left">
+                        <a asp-page="./Profile" asp-route-id="@Model.Profile.Id">
+                            @Model.Profile.FullName
+                        </a>  <br />
+                        @PostedTimeCalculator.TimeAgo(Model.RecentPost.DateTimePosted.DateTime)
+                    </span>
+
+                </div>
+                <div class="card-body">
+                    @Model.RecentPost.Content
+                </div>
+            </div>
+        </div>
+    }
+</div>
